@@ -3,8 +3,8 @@
 name: Ground
 class: interface
 type: pinout
-description: Raspberry Pi Ground Pins
-pincount: 1
+description: T3 Gemstone O1 ground pins
+pincount: 8
 pin:
   '6':
   '9':
@@ -15,13 +15,9 @@ pin:
   '34':
   '39':
 -->
+
 # Ground
 
-The Ground pins on the Raspberry Pi are all electrically connected, so it doesn't matter
-which one you use if you're wiring up a voltage supply.
+Physical pins 6, 9, 14, 20, 25, 30, 34 and 39 are the ground (GND) connection. All of these pins are connected to the common ground of the board; there is no functional difference between them in use. To keep wiring tidy and short, you can use the ground pin nearest the connection point.
 
-Generally the one that's most convenient or closest to the rest of your connections is tidier
-and easier, or alternatively the one closest to the supply pin that you use.
-
-For example, it's a good idea to use Physical Pin 17 for 3v3 and Physical Pin 25 for ground when using
-the SPI connections, as these are right next to the important pins for SPI0.
+Every peripheral connected to the board, including those with their own external power supply, must share a common ground connection with the board.

@@ -1,12 +1,11 @@
 <!--
 ---
 name: Toprak
-description: Raspberry Pi Toprak Pinleri
+page_url: ground
+description: T3 Gemstone O1 toprak pinleri
 -->
 # Toprak
 
-Raspberry Pi'deki GND pinlerinin hepsi birbiri ile bağlantılıdır, bu yüzden hangi pine toprağı verdiğinizin bir önemi yok.
+Fiziksel 6, 9, 14, 20, 25, 30, 34 ve 39 numaralı pinler toprak (GND) bağlantısıdır. Bu pinlerin tamamı kartın ortak toprak hattına bağlıdır; kullanım açısından aralarında işlevsel bir fark bulunmaz. Kablolamayı düzenli ve kısa tutmak için bağlantı noktasına en yakın toprak pinini kullanabilirsiniz.
 
-Genel olarak devrenizin duruşuna en yakın toprak pinini seçmeniz devrenizin daha derli ve düzenlenebilir olmasını sağlayacaktır. Toprak için alternatif olarak elektrik akımına yakın olan pini de seçebilirsiniz.
-
-Eğer [SPI](/pinout/spi) bağlantılarını kullanıyorsanız 3v3 için Fiziksel pin 17'yi ve de toprak için Fiziksel pin 25'i kullanmanız bu pinlerin SPI0 için önemli olan pinlerin yanında olması sebebi ile iyi bir seçim olacaktır.
+Harici güç kaynağı kullananlar da dahil olmak üzere, karta bağlanan tüm çevre birimlerinin kart ile ortak bir toprak bağlantısına sahip olması gerekir.

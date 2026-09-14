@@ -1,37 +1,26 @@
-# Pinout!
+# T3 Gemstone O1 Pinout
 
-## The Raspberry Pi GPIO pinout guide.
+The T3 Gemstone pinout documents the physical pins, compatibility GPIO numbers and default interfaces of the T3 Gemstone O1 development board. The header uses the widely used Raspberry Pi 40-pin physical layout; the processor, the pin multiplexing options and the software stack, however, are specific to the Texas Instruments AM67A platform.
 
-This GPIO Pinout is an interactive reference to the Raspberry Pi GPIO pins, and a guide to the Raspberry Pi's GPIO interfaces. Pinout also includes [hundreds of pinouts for Raspberry Pi add-on boards, HATs and pHATs](/boards).
+## Header interfaces
 
-## Other Pinouts
+The header provides I2C, SPI, a serial port with flow control, four digital audio signals and 3.3 V GPIO connections. In addition, hardware PWM is available on Physical Pin 29, Physical Pin 31, Physical Pin 32 and Physical Pin 33. Some functions are only available once the matching device tree overlay is enabled in `/boot/uEnv.txt`. Check the boot configuration before connecting any device.
 
-We've created Pinouts for the Raspberry Pi Pico range of boards, you can find them here:
+## Compatible HATs and add-ons
 
-* [Raspberry Pi Pico Pinout](https://pico.pinout.xyz)
-* [Raspberry Pi Pico W Pinout](https://picow.pinout.xyz)
-* [Raspberry Pi Pico 2 Pinout](https://pico2.pinout.xyz)
-* [Raspberry Pi Pico 2 W Pinout](https://pico2w.pinout.xyz)
+The fact that an add-on can be physically connected to the header does not mean that it is electrically or software compatible. The [compatible boards catalogue](/boards) lists only boards reviewed against the T3 Gemstone O1 pin assignment, voltage requirements, pin directions, device tree configuration and Linux driver support.
 
-Plus chip planners for the RP2350A and RP2350B chips:
+An add-on must not be treated as compatible with the T3 Gemstone O1 unless its status is shown as **Verified** or **Conditionally compatible** in the catalogue.
 
-* [Raspberry Pi RP2350A QFN-60 Pinout](https://rp2350a.pinout.xyz)
-* [Raspberry Pi RP2350B QFN-80 Pinout](https://rp2350b.pinout.xyz)
+Compatibility states:
 
-And some experimental pinouts:
+* **Verified:** Hardware and software compatibility have been tested and verified.
+* **Conditionally compatible:** It can work when the stated limitations or the required configurations are met.
+* **Incompatible:** It must not be used with the T3 Gemstone O1, or a required feature is not supported.
 
-* [Minimal Raspberry Pi 40-pin Pinout](https://pi.pinout.xyz)
-* [Espressif ESP32 C5 DevKitC Pinout](https://esp32c5.pinout.xyz)
-* [Espressif ESP32 C3 DevKitC Pinout](https://esp32c3.pinout.xyz)
-* [PJRC Teensy 4.0 Pinout](https://teensy40.pinout.xyz)
+## Official resources
 
-## Explore HATs & pHATs
-
-[Check out Pinout's board explorer](/boards)! Use it to find the pinout for your Raspberry Pi add-on board, or discover new boards. If you manufacture boards, we'd love to add yours too. [You can contribute to Pinout.xyz at GitHub.com](https://github.com/pinout-xyz/Pinout.xyz).
-
-## What do these numbers mean?
-
-* GPIO - General Purpose Input/Output, aka "BCM" or "Broadcom". These are the big numbers, e.g. "GPIO 22". You'll use these with RPi.GPIO and GPIO Zero.
-* Physical - or "Board" correspond to the pin's physical location on the header. These are the small numbers next to the header, e.g. "Physical Pin 15".
-* WiringPi - for the Wiring Pi library. These are shown as a tooltip when you mouseover a pin.
-* Rev 1 Pi - alternate GPIO/BCM numbers for the original, 26-pin model "A" and "B" Pi. The 40-pin header is a superset of that 26-pin one: pins 1 to 26 carry the same signals, so a 26-pin board or wiring diagram still applies.
+* [T3 Gemstone O1 documentation](https://docs.t3gemstone.org/en/boards/o1/introduction)
+* [GPIO guide](https://docs.t3gemstone.org/en/boards/o1/peripherals/gpio)
+* [PWM guide](https://docs.t3gemstone.org/en/boards/o1/peripherals/pwm)
+* [Open hardware design files](https://github.com/t3gemstone/hardware)

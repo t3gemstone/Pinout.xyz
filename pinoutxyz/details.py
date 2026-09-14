@@ -167,6 +167,11 @@ def describe(site, overlay, warn):
 
     found = []
 
+    compatibility = overlay.get('compatibility')
+    if compatibility:
+        label = site.strings.get('compatibility_' + compatibility, compatibility)
+        found.append(site.strings.get('compatibility_status', 'Compatibility: {}').format(label))
+
     for value in (manufacturer(site, overlay),
                   form_factor(site, overlay) if 'pincount' in overlay else None,
                   eeprom(site, overlay) if 'eeprom' in overlay else None,

@@ -3,51 +3,30 @@
 name: PWM
 class: interface
 type: pinout
-description: Raspberry Pi PWM pins
+description: T3 Gemstone O1 hardware PWM-capable header pins
+url: https://docs.t3gemstone.org/en/boards/o1/peripherals/pwm
 pin:
+  '29':
+    name: PWM-0A
+  '31':
+    name: PWM-1A
   '32':
-    name: PWM0
+    name: PWM-0B
   '33':
-    name: PWM1
-  '12':
-    name: PWM0
-  '35':
-    name: PWM1
+    name: PWM-1B
 -->
+
 # PWM - Pulse-width Modulation
 
-Pulse-width modulation creates a rectangular wave signal that is commonly used
-for dimming or blinking an LED, control a display backlight or the speed of a
-motor (e.g. a fan).
+Four pins can produce a hardware-based PWM signal. This keeps the timing of the PWM signal stable and independent of processor load. These pins are grouped into two pairs:
 
-Note that the outputs are only useful as control signals, not to actually drive
-a motor.
+| Pins | Channels |
+| :-- | :-- |
+| 29 and 32 | PWM-0A and PWM-0B |
+| 31 and 33 | PWM-1A and PWM-1B |
 
-The PWM controller that has outputs available on the Raspberry Pi header
-(`pwm@7e20c000`) has two independent channels. The output of the first can be
-routed to GPIO 12 or GPIO 18, the second's output to GPIO 13 or GPIO 19.
+The two pins in a pair use a common PWM frequency, but the duty cycle of each pin can be set independently. This allows a total of four independent duty cycles across two different PWM frequencies.
 
-On Pi 5 the RP1 PWM block has four channels instead of two, one each on GPIO 12,
-GPIO 13, GPIO 18 and GPIO 19.
+You can control them through `/sys/class/pwm`.
 
-## Enable via config.txt
-
-`dtoverlay=pwm` sets up one channel and `dtoverlay=pwm-2chan` sets up both, on
-GPIO 18 and GPIO 19 by default. The `pin` and `func` parameters move a channel to
-another of its pins:
-
-```
-dtoverlay=pwm-2chan,pin=12,func=4,pin2=13,func2=4
-```
-
-`func` is the function number for the pin you pick: 4 for GPIO 12 and GPIO 13, 2
-for GPIO 18 and GPIO 19. These are the numbers the older models use, and they
-still work on Pi 5, where the RP1 GPIO driver maps each one to the closest
-matching RP1 function. Overlays written before Pi 5 don't need a Pi 5 variant.
-
-The onboard analogue audio output uses both channels, so it can't be used at the
-same time as PWM. GPIO 18 and GPIO 19 are also the I2S clock and frame select,
-which makes GPIO 12 and GPIO 13 the pair to use alongside an I2S audio HAT.
-
-Pi 5 also has `dtoverlay=pwm-pio`, which drives a PWM signal from PIO on any pin
-in bank 0 rather than from the PWM block.
+> **PWM pins do not supply power:** These pins provide a PWM signal at 3.3 V logic levels only. Loads such as servos, motors or LED strips must not be powered directly from the PWM pins. Use a suitable external power supply for such loads, connect the ground of the load to a ground pin on the header, and use a suitable driver circuit or transistor where required.

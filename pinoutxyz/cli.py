@@ -9,7 +9,7 @@ from .pins import Pins
 from .site import Reporter, Site
 
 SITE_DIR = 'output/site'
-SHARED_DIRS = ('resources', 'phatstack')
+SHARED_DIRS = ('resources',)
 
 
 def resolve(root, requested):
@@ -32,6 +32,7 @@ def build_languages(root, languages, verbose=False):
 
     for lang in languages:
         reporter.info('\nBuilding {}...'.format(lang))
+        shutil.rmtree(os.path.join(root, 'output', lang), ignore_errors=True)
         build(Site(root, lang, alternates, reporter, source))
 
     return reporter

@@ -76,6 +76,11 @@ def check(root, board):
     if unknown:
         return 'Unsupported type: {}'.format(', '.join(unknown))
 
+    compatibility = data.get('compatibility')
+    supported = ('verified', 'conditional', 'incompatible')
+    if compatibility not in supported:
+        return 'compatibility must be one of: {}'.format(', '.join(supported))
+
     published = os.path.join(root, 'src', overlays.SOURCE, 'overlay', '{}.md'.format(board))
     if os.path.exists(published):
         return 'Already published as {}'.format(published)

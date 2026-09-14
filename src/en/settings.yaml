@@ -1,12 +1,23 @@
-domain: pinout.xyz
+domain: pinout.t3gemstone.org
 language: English
 locale: en_GB
 flag: gb
 site_url: ''
 base_url: /pinout/
 resource_url: /resources/
-url_suffix:
+url_suffix: .html
 urls:
   GND: ground
   "+5v": 5v_power
   "+3v3": 3v3_power
+interfaces:
+  - gpio
+  - 3v3-power
+  - 5v-power
+  - ground
+  - i2c
+  - spi
+  - uart
+  - iface-pwm
+  - iface-pcm
+  - ardupilot

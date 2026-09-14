@@ -3,126 +3,45 @@
 name: I2C
 class: interface
 type: pinout
-description: Raspberry Pi I2C pins
-url: http://www.raspberry-projects.com/pi/programming-in-python/i2c-programming-in-python/using-the-i2c-interface-2
+description: T3 Gemstone O1 I2C-MCU0 and shared I2C-WKUP0 header pins
+url: https://docs.t3gemstone.org/en/boards/o1/peripherals/i2c
 pin:
   '3':
-    name: Data
+    name: I2C-MCU0 SDA
     direction: both
     active: high
   '5':
-    name: Clock
+    name: I2C-MCU0 SCL
     direction: both
     active: high
   '27':
-    name: EEPROM Data
+    name: I2C-WKUP0 SDA
     direction: both
     active: high
   '28':
-    name: EEPROM Clock
+    name: I2C-WKUP0 SCL
     direction: both
     active: high
-  '7':
-    name: I2C SDA
-    direction: both
-    active: high
-    supported: Pi 4 (i2c3) and Pi 5 (i2c2)
-  '29':
-    name: I2C SCL
-    direction: both
-    active: high
-    supported: Pi 4 (i2c3) and Pi 5 (i2c2)
-  '31':
-    name: I2C SDA
-    direction: both
-    active: high
-    supported: Pi 4 (i2c4) and Pi 5 (i2c3)
-  '26':
-    name: I2C SCL
-    direction: both
-    active: high
-    supported: Pi 4 (i2c4) and Pi 5 (i2c3)
-  '24':
-    name: I2C SDA
-    direction: both
-    active: high
-    supported: Pi 4 (i2c4) and Pi 5 (i2c0)
-  '21':
-    name: I2C SCL
-    direction: both
-    active: high
-    supported: Pi 4 (i2c4) and Pi 5 (i2c0)
-  '19':
-    name: I2C SDA
-    direction: both
-    active: high
-    supported: Pi 4 (i2c5) and Pi 5 (i2c1)
-  '23':
-    name: I2C SCL
-    direction: both
-    active: high
-    supported: Pi 4 (i2c5) and Pi 5 (i2c1)
-  '32':
-    name: I2C SDA
-    direction: both
-    active: high
-    supported: Pi 4 (i2c5) and Pi 5 (i2c2)
-  '33':
-    name: I2C SCL
-    direction: both
-    active: high
-    supported: Pi 4 (i2c5) and Pi 5 (i2c2)
-  '15':
-    name: I2C SDA
-    direction: both
-    active: high
-    supported: Pi 4 (i2c6) and Pi 5 (i2c3)
-  '16':
-    name: I2C SCL
-    direction: both
-    active: high
-    supported: Pi 4 (i2c6) and Pi 5 (i2c3)
-  '8':
-    name: I2C SDA
-    direction: both
-    active: high
-    supported: Pi 5 (i2c3)
-  '10':
-    name: I2C SCL
-    direction: both
-    active: high
-    supported: Pi 5 (i2c3)
 -->
-# I2C - Inter Integrated Circuit
 
-GPIO 2 and GPIO 3 - the Raspberry Pi's I2C1 pins - allow for two-wire communication with a variety of external sensors and devices.
+# I2C
 
-The I2C pins include a fixed 1.8 kΩ pull-up resistor to 3.3v. They are not suitable for use as general purpose IO where a pull-up might interfere.
+Physical Pin 3 (data) and Physical Pin 5 (clock) form the I2C bus reserved for external devices. No device on the board is connected to this bus, so it is dedicated to external devices. The pull-up resistors required for I2C communication are already on the board and no additional resistors are needed.
 
-I2C is a multi-drop bus, multiple devices can be connected to these same two pins. Each device has its own unique I2C address.
+The I2C bus number can vary depending on the software image in use. The bus can appear as `/dev/i2c-1` or `/dev/i2c-2`. Use the following command to list the available I2C buses:
 
-I2C is turned off on a stock Raspberry Pi OS image. Enable it with `raspi-config`, or by adding `dtparam=i2c_arm=on` to `/boot/firmware/config.txt`.
+```bash
+ls /dev/i2c-*
+```
 
-Once it's on, `i2cdetect -y 1` from the `i2c-tools` package lists the addresses responding on the bus.
+Use the `i2cdetect` command on a bus to see the connected devices and their I2C addresses.
 
-GPIO 0 and GPIO 1 - I2C0 - can be used as an alternate I2C bus, but are typically used by the system to read the HAT EEPROM.
+> **Before connecting:** Use only devices that support 3.3 V logic levels. Every device on the I2C bus must have a unique address; using the same address on more than one device can cause communication conflicts. Before adding external pull-up resistors, take into account that the board already has pull-up resistors fitted.
 
-## More than one bus
+## Pins 27 and 28 are a shared I2C bus
 
-i2c1 is the only bus available without an overlay. Pi 4 and Pi 5 both have several more, each on a pair of low-numbered GPIO pins, but the numbering differs between the two models:
+Physical Pin 27 and Physical Pin 28 belong to the second I2C bus on the board. The pull-up resistors required for this bus are already on the board. The power management IC (PMIC), the real-time clock (RTC) and the EEPROM are connected to this bus internally.
 
-| Pins | Pi 4 | Pi 5 | Notes |
-| --- | --- | --- | --- |
-| GPIO 0 and GPIO 1 | i2c0 or i2c6 | i2c0 | Usually left alone for the HAT EEPROM |
-| GPIO 2 and GPIO 3 | i2c1 or i2c3 | i2c1 | |
-| GPIO 4 and GPIO 5 | i2c3 | i2c2 | |
-| GPIO 6 and GPIO 7 | i2c4 | i2c3 | |
-| GPIO 8 and GPIO 9 | i2c4 | i2c0 | |
-| GPIO 10 and GPIO 11 | i2c5 | i2c1 | |
-| GPIO 12 and GPIO 13 | i2c5 | i2c2 | |
-| GPIO 14 and GPIO 15 | | i2c3 | Also the UART pins |
-| GPIO 22 and GPIO 23 | i2c6 | i2c3 | |
+You can connect external I2C devices to these pins. Because the bus is shared with the existing devices, use the `i2cdetect` command to check the I2C addresses already present on the bus before connecting a new device, and use a unique address that does not cause a conflict.
 
-Each bus is enabled with a device tree overlay, and the pin pair is chosen with a parameter: `dtoverlay=i2c4,pins_6_7` on a Pi 4. On Pi 5 the overlays take a `-pi5` suffix, so the same pins are `dtoverlay=i2c3-pi5,pins_6_7`.
-
-Only GPIO 2 and GPIO 3 have pull-up resistors fitted. Every other pair needs your own, typically 4.7 kΩ to 3.3v.
+> **Caution:** This I2C bus must be used more carefully than the one on pins 3 and 5. Because the power management IC (PMIC) is connected to this bus, a short circuit, an incorrect voltage or a jammed bus can affect the operation not only of the connected peripheral but of the whole board. Do not change the configuration of the devices already present on the bus. For general-purpose sensor and peripheral connections, the I2C bus on Physical Pin 3 and Physical Pin 5 is recommended. That bus is reserved for external devices.

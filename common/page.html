@@ -21,65 +21,70 @@
 				</div>
 				<div id="legend">
 					<div>
-						<h2>Legend</h2>
-						<p>Orientate your Pi with the GPIO on the right and the HDMI port(s) on the left.</p>
+						<h2>{{strings:legend}}</h2>
+						<p>{{strings:orientation_help}}</p>
 						<ul>
 							<li class="gpio">
-								<a href="{{settings:base_url}}{{settings:url_gpio}}" title="GPIO (General Purpose IO)">
+								<a href="{{settings:base_url}}{{settings:url_gpio}}{{settings:url_suffix}}" title="GPIO (General Purpose IO)">
 									<span class="default"></span>
 									<span class="pin"></span> GPIO <small>(General Purpose IO)</small>
 								</a>
 							</li>
 							<li class="spi">
-								<a href="{{settings:base_url}}spi" title="SPI (Serial Peripheral Interface)">
+								<a href="{{settings:base_url}}spi{{settings:url_suffix}}" title="SPI (Serial Peripheral Interface)">
 									<span class="default"></span>
 									<span class="pin"></span> SPI <small>(Serial Peripheral Interface)</small>
 								</a>
 							</li>
 							<li class="i2c">
-								<a href="{{settings:base_url}}i2c" title="I2C (Inter-integrated Circuit)">
+								<a href="{{settings:base_url}}i2c{{settings:url_suffix}}" title="I2C (Inter-integrated Circuit)">
 									<span class="default"></span>
 									<span class="pin"></span> I<sup>2</sup>C <small>(Inter-integrated Circuit)</small>
 								</a>
 							</li>
 							<li class="uart">
-								<a href="{{settings:base_url}}uart" title="UART (Universal Asynchronous Receiver/Transmitter)">
+								<a href="{{settings:base_url}}uart{{settings:url_suffix}}" title="UART (Universal Asynchronous Receiver/Transmitter)">
 									<span class="default"></span>
 									<span class="pin"></span> UART <small>(Universal Asynchronous Receiver/Transmitter)</small>
 								</a>
 							</li>
 							<li class="pcm">
-								<a href="{{settings:base_url}}pcm" title="PCM (Pulse Code Modulation)">
+								<a href="{{settings:base_url}}pcm{{settings:url_suffix}}" title="PCM (Pulse Code Modulation)">
 									<span class="default"></span>
 									<span class="pin"></span> PCM <small>(Pulse Code Modulation)</small>
 								</a>
 							</li>
 							<li class="gnd">
-								<a href="{{settings:base_url}}{{settings:url_ground}}" title="Ground">
+								<a href="{{settings:base_url}}{{settings:url_ground}}{{settings:url_suffix}}" title="Ground">
 									<span class="default"></span>
 									<span class="pin"></span> Ground
 								</a>
 							</li>
 							<li class="pow5v">
-								<a href="{{settings:base_url}}{{settings:url_5v}}" title="5v (Power)">
+								<a href="{{settings:base_url}}{{settings:url_5v}}{{settings:url_suffix}}" title="5v (Power)">
 									<span class="default"></span>
 									<span class="pin"></span> 5v <small>(Power)</small>
 								</a>
 							</li>
 							<li class="pow3v3">
-								<a href="{{settings:base_url}}{{settings:url_3v3}}" title="3.3v (Power)">
+								<a href="{{settings:base_url}}{{settings:url_3v3}}{{settings:url_suffix}}" title="3.3v (Power)">
 									<span class="default"></span>
 									<span class="pin"></span> 3.3v <small>(Power)</small>
 								</a>
 							</li>
 						</ul>
 					</div>
-					<img class="pi-orientation" src="{{resource_url}}pi-orientation.svg" alt="Orient your Pi facing up, such that the GPIO on the right and HDMI port(s) are on the left." width="196" height="297" />
+					<div class="board-orientation">
+						<img class="pi-orientation" src="{{resource_url}}t3-gem-o1.png" alt="{{strings:orientation_alt}}" width="208" height="208" />
+						<span class="pin-order-label">{{strings:pin_order}}</span>
+						<span class="pin-pair-start">1 / 2</span>
+						<span class="pin-pair-end">39 / 40</span>
+					</div>
 				</div>
 			</aside>
 			<div id="interfaces">
 				<div>
-					Support me: <a href="https://www.pcbway.com/?from=pinout.xyz04">Build your first project with <strong>PCBWay</strong></a>
+					{{strings:project_label}} <a href="https://docs.t3gemstone.org"><strong>{{strings:project_link_text}}</strong></a>
 				</div>
 				<ul>
 				{{interfaces}}

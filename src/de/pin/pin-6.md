@@ -1,1 +1,0 @@
-Masse (Ground)

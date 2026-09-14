@@ -1,0 +1,85 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Build & Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: make deps
+
+      - name: Build Site
+        run: |
+          make dist
+          make -C api
+          cp -r api/v1 output/site
+          cp api/index.png output/site/v1/img/
+
+      - name: Determine Release Tag
+        id: meta
+        run: |
+          SHORT_SHA=$(git rev-parse --short=7 HEAD)
+          VERSION=$(python3 -c "import tomllib,pathlib;print(tomllib.loads(pathlib.Path('pyproject.toml').read_text())['project']['version'])")
+          TAG="v${VERSION}-build.${GITHUB_RUN_NUMBER}-${SHORT_SHA}"
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+          echo "short_sha=${SHORT_SHA}" >> "$GITHUB_OUTPUT"
+          echo "name=${{ github.event.repository.name }}-${TAG}" >> "$GITHUB_OUTPUT"
+
+      - name: Package Artifacts
+        run: |
+          mkdir -p dist
+          NAME="${{ steps.meta.outputs.name }}"
+          tar -czf "dist/${NAME}.tar.gz" -C output/site .
+          (cd output/site && zip -qr "../../dist/${NAME}.zip" .)
+          (cd dist && sha256sum *.tar.gz *.zip > SHA256SUMS.txt)
+          ls -lh dist
+
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: site
+          path: dist/
+          retention-days: 30
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.meta.outputs.tag }}
+          name: ${{ steps.meta.outputs.tag }}
+          target_commitish: ${{ github.sha }}
+          body: |
+            Automated build of `${{ steps.meta.outputs.short_sha }}` on `${{ github.ref_name }}`.
+
+            **Commit:** ${{ github.event.head_commit.message }}
+
+            Artifacts contain the fully built static site (all languages + API v1).
+          generate_release_notes: true
+          files: |
+            dist/*.tar.gz
+            dist/*.zip
+            dist/SHA256SUMS.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

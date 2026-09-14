@@ -1,6 +1,7 @@
 [codespell]
 # src/ holds translations; only the English source is spell-checked.
-skip = ./.git,*.svg,*.png,*.ai,LICENSE,./output,./__pycache__,./resources/prettify,./api/v1,./src/de,./src/es,./src/fr,./src/it,./src/tr
+skip = ./.git,*.svg,*.png,*.ai,LICENSE,./output,./__pycache__,./resources/prettify,./api/v1,./src/tr
 # "re-use" is the spelling used throughout; DOUT and TE are signal names.
-# Technic is a LEGO trademark.
-ignore-words-list = re-use,dout,te,technic
+# Technic is a LEGO trademark. "sistem" is Turkish, from the description_tr
+# values that share src/en/template/pinout.yaml with the English ones.
+ignore-words-list = re-use,dout,te,technic,sistem
