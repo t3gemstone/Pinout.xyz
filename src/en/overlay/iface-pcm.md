@@ -3,21 +3,28 @@
 name: PCM
 class: interface
 type: pinout
-description: Raspberry Pi PCM pins
+description: T3 Gemstone O1 PCM/I2S-compatible header signals
+url: https://docs.t3gemstone.org/en/boards/o1/peripherals/introduction
 pin:
-  'bcm18':
+  '12':
     name: CLK
-  'bcm19':
+  '35':
     name: FS
-  'bcm20':
-    name: DIN
-  'bcm21':
-    name: DOUT
+  '38':
+    name: DATA0
+  '40':
+    name: DATA1
 -->
+
 # PCM - Pulse-code Modulation
 
-PCM (Pulse-code Modulation) is a digital representation of sampled analog. On the Raspberry Pi it's a form of digital audio output which can be understood by a DAC for high quality sound.
+Four pins are used for the digital audio interface, in the same physical pin positions that the Raspberry Pi uses for its I2S interface. For that reason a Raspberry Pi compatible audio HAT can be plugged into the header physically.
 
-These are the pins you'll want for I2S (Inter-IC Sound), which is the signalling most audio HATs and DACs use and the name they usually give it.
+| Pin | Function |
+| --: | :-- |
+| 12 | Bit clock (CLK) |
+| 35 | Frame sync (FS) |
+| 38 | Audio data |
+| 40 | Audio data |
 
-I2S is off by default. `dtparam=i2s=on` in /boot/firmware/config.txt enables it, though most audio HATs ship an overlay that does this as part of their own setup.
+On the T3 Gemstone O1 both audio data pins can be configured as an input or an output in software. The direction of the data pins is determined by the audio configuration in use rather than by the physical wiring.

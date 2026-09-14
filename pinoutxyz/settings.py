@@ -29,6 +29,7 @@ DEFAULTS = {
     'bcm_pin_rev1_pi': 'GPIO/BCM pin {} on Rev 1 ( very early ) Pi',
     'supported_on': 'Supported on {}',
     'physical_pin_n': 'Physical/Board pin {}',
+    'gpio_pin_n': 'Compatibility GPIO {}',
     'physical_pin_label': 'physical pin',
     'gpio_header': 'GPIO header',
     'pins_odd': 'Odd-numbered pins',
@@ -46,13 +47,20 @@ DEFAULTS = {
     'pin_functions': 'Alternate functions by model',
     'rotate_pinout': 'Rotate the pinout 180 degrees',
     'choose_language': 'Choose a language',
-    'return_home': 'Return to the Raspberry Pi GPIO Pinout',
-    'boards_title': 'Raspberry Pi HATs, pHATs &amp; Add-ons',
+    'return_home': 'Return to the T3 Gemstone O1 GPIO Pinout',
+    'boards_title': 'T3 Gemstone O1 HATs, pHATs &amp; Add-ons',
     'boards_subtitle': 'Click on a HAT, pHAT or add-on for more details and to see which pins it uses!'
 }
 
 
 def languages(root='.'):
+    configured = os.path.join(root, 'site.yaml')
+    if os.path.exists(configured):
+        site = yaml.safe_load(open(configured).read()) or {}
+        enabled = site.get('languages')
+        if enabled:
+            return [str(code) for code in enabled]
+
     return sorted(os.path.basename(os.path.dirname(path))
                   for path in glob.glob(os.path.join(root, 'src/??/settings.yaml')))
 

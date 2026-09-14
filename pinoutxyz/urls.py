@@ -26,16 +26,17 @@ def for_language(root, lang, source=None):
     site = 'https://{}'.format(conf.get('domain') or 'pinout.xyz')
     base_url = conf.get('base_url') or '/pinout/'
     site_url = conf.get('site_url') or ''
+    suffix = conf.get('url_suffix') or ''
 
     found = {}
 
     for number in pins.numbers():
         url = pin_url(pins, number)
         if url is not None:
-            found['pin{}'.format(number)] = site + base_url + url
+            found['pin{}'.format(number)] = site + base_url + url + suffix
 
     for data in overlays.load_all(root, lang, source):
-        found[data['src']] = site + base_url + data['page_url']
+        found[data['src']] = site + base_url + data['page_url'] + suffix
 
     found['index'] = site + site_url
     found['boards'] = '{}{}/boards'.format(site, site_url)

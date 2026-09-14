@@ -1,8 +1,26 @@
+from urllib.parse import urlparse
+
 from .slugs import cssify, slugify
 
 
 def article(name, content):
     return '<article class="page_{}">{}</article>'.format(slugify(name), content)
+
+
+def pin_name(site, pin):
+    pin_type = pin.get('type')
+    translated = {
+        '+3v3': 'pin_name_3v3',
+        '+5v': 'pin_name_5v',
+        'GND': 'pin_name_ground',
+    }
+    if pin_type in translated:
+        return site.strings[translated[pin_type]]
+    return pin.get('name_{}'.format(site.lang), pin.get('name', ''))
+
+
+def pin_description(site, pin):
+    return pin.get('description_{}'.format(site.lang), pin.get('description'))
 
 
 def pin_functions(site, number, pin):
@@ -61,35 +79,82 @@ def pin_page(site, number):
         return None, None, None
 
     pin = site.pins[str(number)]
+    name = pin_name(site, pin)
+    description = pin_description(site, pin)
     pin_url = pin['name']
-    title = pin['name']
-    subtext = [site.strings['physical_pin_n'].format(number)]
-
+    title = name
     scheme = pin.get('scheme', {})
 
     if 'bcm' in scheme:
         pin_url = 'gpio{}'.format(scheme['bcm'])
         title = 'GPIO {}'.format(scheme['bcm'])
-        subtext.append('GPIO/BCM pin {}'.format(scheme['bcm']))
     if 'wiringpi' in scheme:
         subtext.append('Wiring Pi pin {}'.format(scheme['wiringpi']))
     if 'bcmAlt' in scheme:
         subtext.append(site.strings['bcm_pin_rev1_pi'].format(scheme['bcmAlt']))
 
-    if 'description' in pin:
-        title = '{} ({})'.format(title, pin['description'])
+    if description:
+        title = '{} ({})'.format(title, description)
 
     functions = pin_functions(site, number, pin)
     pin_url = slugify('pin{}_{}'.format(number, pin_url))
 
-    html = '<article class="{pin_url}"><h1>{pin_name}</h1>{pin_functions}{pin_subtext}{pin_text}</article>'.format(
+    html = '<article class="{pin_url}"><h1>{pin_name}</h1>{pin_functions}{pin_facts}{pin_text}</article>'.format(
         pin_url=pin_url,
         pin_name=title,
         pin_functions=functions,
-        pin_subtext='<ul><li>{}</li></ul>'.format('</li><li>'.join(subtext)),
+        pin_facts=pin_explanation(site, number, pin, scheme),
         pin_text=site.markdown('pin/pin-{}.md'.format(number)))
 
     return pin_url, html, title
+
+
+def pin_explanation(site, number, pin, scheme):
+    pin_type = pin.get('type', '')
+    guide = 'gpio'
+    description = 'pin_desc_gpio'
+    warning = 'pin_warning_gpio'
+    electrical = site.strings['logic_3v3']
+
+    if pin_type == '+3v3':
+        guide, description, warning = '3v3_power', 'pin_desc_3v3', 'pin_warning_3v3'
+        electrical = site.strings['supply_3v3']
+    elif pin_type == '+5v':
+        guide, description, warning = '5v_power', 'pin_desc_5v', 'pin_warning_5v'
+        electrical = site.strings['supply_5v']
+    elif pin_type == 'GND':
+        guide, description, warning = 'ground', 'pin_desc_ground', None
+        electrical = site.strings['ground_reference']
+    elif 'I2C' in pin_type:
+        guide, description, warning = 'i2c', 'pin_desc_i2c', 'pin_warning_i2c'
+    elif 'SPI' in pin_type:
+        guide, description, warning = 'spi', 'pin_desc_spi', 'pin_warning_spi'
+    elif 'UART' in pin_type:
+        guide, description, warning = 'uart', 'pin_desc_uart', 'pin_warning_uart'
+    elif 'PCM' in pin_type:
+        guide, description, warning = 'pcm', 'pin_desc_pcm', 'pin_warning_pcm'
+
+    if number in (27, 28):
+        description, warning = 'pin_desc_hat_i2c', 'pin_warning_hat_i2c'
+
+    facts = [
+        (site.strings['fact_header'], site.strings['physical_pin_n'].format(number)),
+        (site.strings['fact_signal'], pin_name(site, pin) or site.strings['gpio_signal']),
+        (site.strings['fact_electrical'], electrical),
+    ]
+    if 'bcm' in scheme:
+        facts.insert(1, (site.strings['fact_gpio'], site.strings['gpio_pin_n'].format(scheme['bcm'])))
+
+    cards = ''.join('<div><strong>{}</strong><span>{}</span></div>'.format(label, value)
+                    for label, value in facts)
+    link = '{}{}{}'.format(site.base_url, guide, site.url_suffix)
+    warning_html = '' if warning is None else (
+        '<div class="notice notice-warning"><strong>{}</strong><p>{}</p></div>'.format(
+            site.strings['warning_label'], site.strings[warning]))
+    return ('<div class="pin-facts">{}</div>'
+            '<div class="pin-description"><p>{}</p>'
+            '{}<a class="learn-more" href="{}">{} &rarr;</a></div>').format(
+                cards, site.strings[description], warning_html, link, site.strings['learn_more'])
 
 
 def overlay_pin(site, number, overlay, warn):
@@ -111,7 +176,7 @@ def overlay_pin(site, number, overlay, warn):
 def pin(site, number, selected_url, overlay=None, warn=None):
     entry = site.pins[str(number)]
     types = [value.strip() for value in entry['type'].lower().split('/')]
-    name = entry['name']
+    name = pin_name(site, entry)
     pin_url = name
     titles = []
     overlay_data = {}
@@ -178,6 +243,8 @@ def interfaces_sort(overlay):
     name = overlay['name'].lower()
     if name == 'gpio':
         return '0'
+    if name == 'ardupilot':
+        return '8'
     if name == 'ground':
         return '6'
     if name == '1-wire':
@@ -186,15 +253,18 @@ def interfaces_sort(overlay):
 
 
 def interfaces_menu(site, current):
-    interfaces = sorted((o for o in site.overlays if o['class'] == 'interface'), key=interfaces_sort)
+    enabled = site.settings.get('interfaces')
+    interfaces = sorted((o for o in site.overlays
+                         if o['class'] == 'interface'
+                         and (not enabled or o['src'] in enabled)), key=interfaces_sort)
     html = ''
 
     for interface in interfaces:
         selected = ''
         if current is not None and interface['name'] == current.get('name'):
             selected = ' class="selected"'
-        html += '<li{}><a href="{}{}">{}</a></li>'.format(
-            selected, site.base_url, interface['page_url'], interface['name'])
+        html += '<li{}><a href="{}{}{}">{}</a></li>'.format(
+            selected, site.base_url, interface['page_url'], site.url_suffix, interface['name'])
 
     return html
 
@@ -228,8 +298,9 @@ def lang_links(site, src):
             grayscale = ' class="grayscale"'
             current = ' aria-current="true"'
 
-        links.append('<a href="{url}" rel="alternate" hreflang="{lang}" lang="{lang}" title="{name}"{current}><img{css} src="{resource_url}flags/{flag}.svg" width="16" height="12" alt="{name}" /></a>'.format(
-            lang=lang, name=name, flag=flag, url=site.alternates[lang][src],
+        local_url = urlparse(site.alternates[lang][src]).path or '/'
+        links.append('<a href="{url}" rel="alternate" hreflang="{lang}" lang="{lang}" title="{name}"{current}><img{css} src="{resource_url}flags/{flag}.svg" width="16" height="12" alt="" /><span>{name}</span></a>'.format(
+            lang=lang, name=name, flag=flag, url=local_url,
             current=current, resource_url=site.resource_url, css=grayscale))
 
     return links
@@ -245,14 +316,17 @@ def lang_nav(site, links):
 
 
 def board_tile(site, overlay, types, formfactor):
-    return '<li class="board" data-type="{type}" data-manufacturer="{manufacturer}" data-form-factor="{formfactor}"><a href="{base_url}{page_url}"><img loading=\"lazy\" alt="" src="{resource_url}boards/{image}" /><strong>{name}</strong></a></li>'.format(
+    return '<li class="board" data-type="{type}" data-manufacturer="{manufacturer}" data-form-factor="{formfactor}" data-compatibility="{compatibility}"><a href="{base_url}{page_url}{url_suffix}"><img loading=\"lazy\" alt="" src="{resource_url}boards/{image}" /><strong>{name}</strong><small>{compatibility_label}</small></a></li>'.format(
         image=overlay.get('image', 'no-image.png'),
         name=overlay['name'],
         page_url=overlay['page_url'],
         base_url=site.base_url,
+        url_suffix=site.url_suffix,
         type=types,
         formfactor=formfactor,
         manufacturer=overlay.get('collected', overlay.get('manufacturer')),
+        compatibility=overlay.get('compatibility', ''),
+        compatibility_label=site.strings.get('compatibility_' + overlay.get('compatibility', ''), ''),
         resource_url=site.resource_url)
 
 

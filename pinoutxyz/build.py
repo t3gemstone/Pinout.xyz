@@ -19,6 +19,13 @@ def overlay_pages(site):
     tiles = []
 
     for overlay in site.overlays:
+        overlay_class = overlay.get('class')
+        if overlay_class == 'board' and overlay.get('compatibility') not in ('verified', 'conditional'):
+            continue
+        enabled_interfaces = site.settings.get('interfaces')
+        if overlay_class == 'interface' and enabled_interfaces and overlay['src'] not in enabled_interfaces:
+            continue
+
         site.report.notice('>> Rendering: {}'.format(overlay['source']))
 
         overlay['content'] = page_content(site, overlay)
@@ -38,8 +45,11 @@ def overlay_pages(site):
 
 
 def index_pages(site, tiles):
+    board_tiles = ''.join(tiles)
+    if not board_tiles:
+        board_tiles = '<li class="boards-empty">{}</li>'.format(site.strings['boards_empty'])
     return {
-        'boards': {'content': ''.join(tiles), 'src': 'boards'},
+        'boards': {'content': board_tiles, 'src': 'boards'},
         'index': {'content': render.article('Index', site.markdown('template/index.md')), 'src': 'index'},
         '404': {'content': render.article('404', site.markdown('template/404.md'))},
     }
@@ -65,7 +75,8 @@ def render_page(site, url, page, interfaces, default_nav):
         interfaces=render.interfaces_menu(site, page),
         body_class=body_class(url, page),
         crumbtrail=render.crumbtrail(site, page),
-        api_image='https://pinout.xyz/v1/img/{}.png'.format(url))
+        api_image='https://{}/v1/img/{}.png'.format(
+            site.settings.get('domain') or 'pinout.xyz', url))
 
 
 def body_class(url, page):
@@ -129,8 +140,12 @@ def build(site):
         url, html = render_pin_page(site, number, interfaces)
         if url is None:
             continue
-        site.report.notice('>> Saving: pinout/{}/index.html'.format(url))
-        write(os.path.join(site.root, 'output', site.lang, 'pinout', url, 'index.html'), html)
+        if site.url_suffix == '.html':
+            pin_path = os.path.join(site.root, 'output', site.lang, 'pinout', '{}.html'.format(url))
+        else:
+            pin_path = os.path.join(site.root, 'output', site.lang, 'pinout', url, 'index.html')
+        site.report.notice('>> Saving: {}'.format(os.path.relpath(pin_path)))
+        write(pin_path, html)
 
     site.report.info('\nSaving overlay and index pages...')
     for url, page in pages.items():

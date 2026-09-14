@@ -1,5 +1,8 @@
 ---
-name: Raspberry Pi GPIO Pinout
+# Signal assignments follow the T3 Gemstone O1 schematic, t3-gem-o1-v0_2.pdf,
+# sheet 31, where the header is connector J23. The per-pin table is on the GPIO
+# interface page.
+name: T3 Gemstone O1 GPIO Pinout
 pins:
   '1':
     name: 3v3 Power
@@ -8,70 +11,68 @@ pins:
     name: 5v Power
     type: "+5v"
   '3':
-    name: I2C1 SDA
-    description: I2C Data
+    name: I2C-MCU0 SDA
+    description: I2C-MCU0 data
+    description_tr: I2C-MCU0 veri
     type: GPIO/I2C
     scheme:
-      wiringpi: 8
       bcm: 2
-      bcmAlt: 0
   '4':
     name: 5v Power
     type: "+5v"
   '5':
-    name: I2C1 SCL
-    description: I2C Clock
+    name: I2C-MCU0 SCL
+    description: I2C-MCU0 clock
+    description_tr: I2C-MCU0 saat
     type: GPIO/I2C
     scheme:
-      wiringpi: 9
       bcm: 3
-      bcmAlt: 1
   '6':
     name: Ground
     type: GND
   '7':
-    name: GPCLK0
+    name: AUDIO REFCLK2
+    description: audio reference clock
+    description_tr: ses referans saati
     type: GPIO
     scheme:
-      wiringpi: 7
       bcm: 4
   '8':
-    name: UART0 TX
-    description: UART Transmit
+    name: UART-MAIN1 TX
+    description: serial transmit
+    description_tr: seri veri gönderme
     type: GPIO/UART
     scheme:
-      wiringpi: 15
       bcm: 14
   '9':
     name: Ground
     type: GND
   '10':
-    name: UART0 RX
-    description: UART Receive
+    name: UART-MAIN1 RX
+    description: serial receive
+    description_tr: seri veri alma
     type: GPIO/UART
     scheme:
-      wiringpi: 16
       bcm: 15
   '11':
-    name: ''
-    type: GPIO
+    name: UART-MAIN1 RTS
+    description: serial flow control, RTS
+    description_tr: seri iletişim akış kontrolü, RTS
+    type: GPIO/UART
     scheme:
-      wiringpi: 0
       bcm: 17
   '12':
-    name: PCM CLK
-    description: PCM Clock
+    name: PCM-McASP0 CLK
+    description: audio bit clock
+    description_tr: ses bit saati
     type: GPIO/PCM
     scheme:
-      wiringpi: 1
       bcm: 18
   '13':
     name: ''
     type: GPIO
     scheme:
-      wiringpi: 2
       bcm: 27
-      bcmAlt: 21
   '14':
     name: Ground
     type: GND
@@ -79,13 +80,11 @@ pins:
     name: ''
     type: GPIO
     scheme:
-      wiringpi: 3
       bcm: 22
   '16':
     name: ''
     type: GPIO
     scheme:
-      wiringpi: 4
       bcm: 23
   '17':
     name: 3v3 Power
@@ -94,131 +93,130 @@ pins:
     name: ''
     type: GPIO
     scheme:
-      wiringpi: 5
       bcm: 24
   '19':
-    name: SPI0 MOSI
+    name: SPI-MCU0 MOSI
+    description: SPI data out
+    description_tr: SPI veri çıkışı
     type: GPIO/SPI
     scheme:
-      wiringpi: 12
       bcm: 10
   '20':
     name: Ground
     type: GND
   '21':
-    name: SPI0 MISO
+    name: SPI-MCU0 MISO
+    description: SPI data in
+    description_tr: SPI veri girişi
     type: GPIO/SPI
     scheme:
-      wiringpi: 13
       bcm: 9
   '22':
     name: ''
     type: GPIO
     scheme:
-      wiringpi: 6
       bcm: 25
   '23':
-    name: SPI0 SCLK
+    name: SPI-MCU0 SCLK
+    description: SPI clock
+    description_tr: SPI saat
     type: GPIO/SPI
     scheme:
-      wiringpi: 14
       bcm: 11
   '24':
-    name: SPI0 CE0
-    description: SPI Chip Select 0
+    name: SPI-MCU0 CS0
+    description: SPI chip select 0
+    description_tr: SPI chip-select 0
     type: GPIO/SPI
     scheme:
-      wiringpi: 10
       bcm: 8
   '25':
     name: Ground
     type: GND
   '26':
-    name: SPI0 CE1
-    description: SPI Chip Select 1
+    name: SPI-MCU0 CS2
+    description: SPI chip select 2
+    description_tr: SPI chip-select 2
     type: GPIO/SPI
     scheme:
-      wiringpi: 11
       bcm: 7
   '27':
-    name: EEPROM SDA
-    description: HAT EEPROM i2c Data
+    name: I2C-WKUP0 SDA
     type: GPIO/I2C
     scheme:
-      wiringpi: 30
       bcm: 0
   '28':
-    name: EEPROM SCL
-    description: HAT EEPROM i2c Clock
+    name: I2C-WKUP0 SCL
     type: GPIO/I2C
     scheme:
-      wiringpi: 31
       bcm: 1
   '29':
-    name: ''
+    name: PWM-0A
+    description: PWM
+    description_tr: PWM
     type: GPIO
     scheme:
-      wiringpi: 21
       bcm: 5
   '30':
     name: Ground
     type: GND
   '31':
-    name: ''
+    name: PWM-1A
+    description: PWM
+    description_tr: PWM
     type: GPIO
     scheme:
-      wiringpi: 22
       bcm: 6
   '32':
-    name: PWM0
+    name: PWM-0B
+    description: PWM
+    description_tr: PWM
     type: GPIO
-    description: PWM0
     scheme:
-      wiringpi: 26
       bcm: 12
   '33':
-    name: PWM1
+    name: PWM-1B
+    description: PWM
+    description_tr: PWM
     type: GPIO
-    description: PWM1
     scheme:
-      wiringpi: 23
       bcm: 13
   '34':
     name: Ground
     type: GND
   '35':
-    name: PCM FS
-    description: PCM Frame Sync
+    name: PCM-McASP0 FS
+    description: audio frame sync
+    description_tr: ses çerçeve eşzamanlaması
     type: GPIO/PCM
     scheme:
-      wiringpi: 24
       bcm: 19
   '36':
-    name: ''
-    type: GPIO
+    name: UART-MAIN1 CTS
+    description: serial flow control, CTS
+    description_tr: seri veri akış kontrolü, CTS
+    type: GPIO/UART
     scheme:
-      wiringpi: 27
       bcm: 16
   '37':
     name: ''
     type: GPIO
     scheme:
-      wiringpi: 25
       bcm: 26
   '38':
-    name: PCM DIN
-    description: PCM Data-In
+    name: PCM-McASP0 DATA0
+    description: audio data
+    description_tr: ses verisi
     type: GPIO/PCM
     scheme:
-      wiringpi: 28
       bcm: 20
   '39':
     name: Ground
     type: GND
   '40':
-    name: PCM DOUT
-    description: PCM Data-Out
+    name: PCM-McASP0 DATA1
+    description: audio data
+    description_tr: ses verisi
     type: GPIO/PCM
     scheme:
-      wiringpi: 29
       bcm: 21

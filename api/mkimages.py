@@ -19,21 +19,7 @@ SOL_BG = (0xcc, 0xcc, 0xcc) #586e75
 
 SOL_BG = tuple([int(x * 1.2) for x in SOL_BG])
 
-LOGO_PALETTE = [
-    (51, 51, 51),
-    (98, 221, 20),
-    (58, 130, 12),
-    (229, 4, 56),
-    (171, 3, 42),
-    (204, 6, 52),
-]
-
-LOGO_TEXT = "Pinout.xyz"
-
-LOGO = [0,0,1,0,
-        3,5,2,1,
-        5,5,5,0,
-        4,4,4,0]
+LOGO_TEXT = "T3 Gemstone Pinout"
 
 LOGO_FONT = ImageFont.truetype("Lato-Semibold.ttf", 21)
 TEXT_FONT = ImageFont.truetype("Lato-Medium.ttf", 16)
@@ -68,13 +54,8 @@ overlays = map(load_overlay, overlays)
 
 uses = {}
 
-logo = Image.new("RGBA", (4, 4), (0, 0, 0, 0))
-for x in range(4):
-    for y in range(4):
-        idx = (y*4) + x
-        idx = LOGO[idx]
-        col = LOGO_PALETTE[idx]
-        logo.putpixel((x, y), col)
+MARK = Image.open("../resources/gemstone-mark-dark.png").convert("RGBA")
+MARK = MARK.resize((66, round(MARK.height * 66 / MARK.width)), Image.LANCZOS)
 
 for overlay in overlays:
     if "pin" not in overlay:
@@ -140,8 +121,8 @@ for overlay in overlays:
     #img = img.crop((1, 1, 21, 3))
     #img = Image.new("RGBA", (20, 7), (0, 0, 0, 0))
     #img.paste(pinout, (0, 0, 21, 3))
-    img.paste(logo, (0, 5))
     img = img.resize((400,220), Image.NEAREST)
+    img.paste(MARK, (12, 96), MARK)
     draw = ImageDraw.Draw(img)
     
     o_y = 100
@@ -177,12 +158,12 @@ for pin_number in range(1,41):
     else:
         imguses.putpixel((x, y), (use, 0, 255-use, 255))
 
-imguses.paste(logo, (0, 3))
 imguses = imguses.resize((400,140), Image.NEAREST)
+imguses.paste(MARK, (12, 56), MARK)
 draw = ImageDraw.Draw(imguses)
 
 o_y = 60
-draw.text((100, o_y), "Raspberry Pi GPIO Heatmap", (60, 60, 60), font=LOGO_FONT)
+draw.text((100, o_y), "T3 Gemstone O1 GPIO Heatmap", (60, 60, 60), font=LOGO_FONT)
 o_y += 25
 draw.text((100, o_y), LOGO_TEXT, (60, 60, 60), font=TEXT_FONT)
 

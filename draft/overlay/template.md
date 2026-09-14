@@ -6,6 +6,7 @@ type: other
 formfactor: Custom
 manufacturer: Company
 description: An add-on board for the Raspberry Pi
+compatibility: conditional
 url: https://my-addon-board.com
 github: https://github.com/my-addon-board-repo.com
 schematic: https://my-addon-board-schematic.com
@@ -52,6 +53,7 @@ MANDATORY
 * formfactor: the board's form factor. Valid values are Custom, HAT and pHAT. Note that an EEPROM is required for HAT specs, use Custom if that is not the case.
 * manufacturer: the manufacturer's name.
 * description: a description of what the add-on board provides.
+* compatibility: the review result: `verified`, `conditional` or `incompatible`. Only verified and conditional boards are published in the catalogue.
 * url: the main URL for the product providing detailed technical information about the board.
 * pin: an array of the pins used. Do not specify power or EEPROM pins as part of the array! The exception is an EEPROM write-protect pin, which takes 'mode: EEPROM_WP' and is labelled 'EEPROM WP'.
 
