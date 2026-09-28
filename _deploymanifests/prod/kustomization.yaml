@@ -1,0 +1,7 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- deployment.yaml
+images:
+- name: swr.tr-west-1.myhuaweicloud.com/t3vakfi-cce/pinout
+  newTag: 9f50c249a5de0ff10096d14265d69545f76fa13e20260703212054
